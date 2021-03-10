@@ -1,0 +1,19 @@
+:root {
+ --size: 230;
+}
+#slots-display {
+ /*height: calc(--size5*size)px;*/
+ background-color: aquamarine; 
+}
+.reel {
+  position: relative;
+}
+#middle-line {
+  position: absolute;
+}
+img {
+  position: absolute;
+}
+span {
+  border: 1px solid green;
+}
