@@ -24,13 +24,16 @@ function createSlotSymbol(filename, parentId) {
 let slotSymbolImageArray = [];
 for (let i = 0; i<parents.length; i++){
   slotSymbolImageArray[i] = slotSymbols.map((x)=>createSlotSymbol(x, parents[i]));
+
   //parents[i].
 }
 
 slotsDisplay.style.height = 'calc(5*' + SIZE +')';
+/*
+function setInitialSlotSymbolCoords(slotArray){ 
+}*/
 
 let firstSlotSymbol = slotSymbolImageArray[1][1];
-console.log(firstSlotSymbol);
 let times= 0;
 let prev = performance.now();
 
@@ -38,7 +41,6 @@ requestAnimationFrame(function moveSymbol(time){
 
   // assign coordinates
   let coords = firstSlotSymbol.getBoundingClientRect();
-  console.log(coords, "coords");
   firstSlotSymbol.style.top = coords.top + "1px";
   if (times++ < 50) {requestAnimationFrame(moveSymbol)};
 });
