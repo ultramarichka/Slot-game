@@ -19,8 +19,15 @@
     <div id="middle-line"></div>
     </div>
     <div id = "controlPanel">
-      <button onclick="spin()">Spin</button>
-      <button onclick="stop()">Stop</button>
+      <button id="spin-button" class="jellyButton" onclick="spin()">
+	       <span>Spin</span>
+      </button>
+      <button id="stop-button" class="jellyButton" onclick="stop()">
+	       <span>Stop</span>
+      </button>
+      <button id="refresh-button" class="jellyButton">
+	       <span>Refresh</span>
+      </button>
     </div>
     <script src="script.js"></script>
   </body>

@@ -78,7 +78,10 @@ SlotSymbol.prototype.spin = function(){
   );
 }
 
-
+function Reel(){
+  
+  this.initialSymbols = [];
+}
 
 reel = [1,2,3,4]
 reel = reel.map(function (x){
