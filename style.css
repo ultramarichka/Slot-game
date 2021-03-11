@@ -3,8 +3,9 @@
  --button-size: 80px;
 }
 #slots-display {
- /*height: calc(--size5*size)px;*/
- background-color: aquamarine; 
+ margin: 20%;
+ position: relative;
+ width: 920px;
 }
 .reel {
   position: relative;
@@ -18,14 +19,36 @@ img {
 span {
   border: 1px solid green;
 }
-
+.cover {
+  position: absolute;
+  height: 230px;
+  background-color: white;
+  width: 920px;
+  z-index: 1000;
+}
+#cover-bottom {          
+  position: absolute; 
+  top: 920px;            
+  bottom: 0;
+}
+#middle-line {
+  position: relative;
+  top: 420px;
+  left: -20px;
+  height: 230px;
+  width: 920px;
+  border: 20px solid #bae6a7;
+}
 
 /*button style*/
-
+#controlPanel {
+  position: absolute;
+  
+}
 .jellyButton {
 	cursor: pointer;
 	position: relative;
-  margin: 0.5em;
+  margin: 1.25em 0.25em;
 	padding: 0.5em 2em;
 	border-radius: 3.5em;
 	line-height: 1.5em;
