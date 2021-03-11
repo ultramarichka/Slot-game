@@ -1,14 +1,12 @@
 const SIZE =230;
 const VISIBLE_SLOTS = 3;
-const TOTAL_HEIGHT = SIZE*(VISIBLE_SLOTS+2);
 const HIDDEN_Y = SIZE*(VISIBLE_SLOTS+1);
 //creates array of symbols filenames
 const FILENAMES = [1,2,3,4,5,6,7,8].map((x)=>"assets/"+ x +".png");
 
-
-//array of strings: src-s of symbols(images)
-let slotSymbols = FILENAMES.slice();
-//creates array of strings: reels id-s
+//array of src-s of symbols(images)
+let slotSymbolUrlArray = FILENAMES.slice();
+//creates array of reels id-s
 let parents = [1,2,3,4].map((x)=>"reel-"+x);
 
 let slotsDisplay = document.getElementById("slots-display");
@@ -23,29 +21,25 @@ function createSlotSymbol(filename, parentId) {
   return img;
 }
 
-// let slotSymbolImageArray = [];
-// for (let i = 0; i<parents.length; i++){
-//   slotSymbolImageArray[i] = slotSymbols.map((x)=>createSlotSymbol(x, parents[i]));
-//   //parents[i].
-// }
-
 slotsDisplay.style.height = 'calc(5*' + SIZE +'px)';
 
-
-function SlotSymbol(url){
+/** SlotSymbol class constructor
+ * 
+ * @param {*} url 
+ */ 
+function SlotSymbol(url, parentId){
 // Declare symbol class
   this.url = url;
   this.img = document.createElement("img");
   this.img.src = this.url;
-  this.img.className = "symbol";
+  this.img.className = "slotSymbol";
   this.y = 0;
-  return this;
-}
-
-SlotSymbol.prototype.attach = function(parentId){
+  this.launched = false;
+  // attcach to the parent container
   this.parentId = parentId;
   this.parent = document.getElementById(parentId);
   this.parent.appendChild(this.img);
+  return this;
 }
 
 SlotSymbol.prototype.setY = function(y){
@@ -59,63 +53,173 @@ SlotSymbol.prototype.getY = function(){
   return this.y;
 }
 
-SlotSymbol.prototype.spin = function(){
-  window.stopped = false;
-  let symb = this;
-  let startTime = performance.now();
-  requestAnimationFrame(
-    function spinOneSymbol(time, speed=240.0/1000.0*1.0){
-      if (window.stopped) { return };
-      let y0 =symb.getY();
-      if(y0 < HIDDEN_Y ){
-        let newY = y0 + speed*(time- startTime);
-        symb.setY(newY);
-        requestAnimationFrame(spinOneSymbol);
-      }else{
-        symb.setY(0);
-      }
+/** Symbol pool helper class 
+ * It's aware of the SlotSymbol class
+ * which must have launched property
+ * 
+ * MAYBE: reimplement this as parralel arrays, so that SlotSymbol
+ * doesn't have to know if it's launched or not
+*/
+function SymbolPool(url, parentId, count){
+  this._pool = [];
+  for(let i = 0;i<count;i++){
+    this._pool.push(new SlotSymbol(url,parentId));
+  }
+}
+
+SymbolPool.prototype.lease = function(){
+  let index = this._pool.findIndex(
+    //return unused symbol from this.symbolPool[symbolType]
+    function(symb){
+      return !symb.launched; 
     }
   );
+  if(index==-1){
+    alert("Symbol pool exhausted -- IMPOSSIBLE! Check the logic")
+  };
+  this._pool[index].launched = true;
+  return this._pool[index];
 }
 
-function Reel(){
+SymbolPool.prototype.reset = function(){
+  this._pool.forEach(
+    function(x){
+      x.launched = false;
+    }
+  )
+}
+
+
+/** Reel class */
+function Reel(id,rate,symbolSize){
+  this.rate = rate;
+  this.id = id;
+  this.symbolSize = symbolSize ? symbolSize : SIZE;
+  this.visibleSymbolIncrements = [];
+  for(let i=0; i<VISIBLE_SLOTS+1; i++){
+    this.visibleSymbolIncrements.push(i);
+  }
+  // create a preloaded symbolPool for each symbolType
+  this.symbolTypePool = slotSymbolUrlArray.map(
+    function (src){
+      return new SymbolPool(src,id,VISIBLE_SLOTS+2);
+    }
+  )
+  this.generatedSymbolTypes = [];
+  this.visibleSymbols = [];
+  this.update(0);
+}
+
+Reel.prototype.calculateCoordinate = function(totalSpinTime, index){
+  return this.symbolSize*(totalSpinTime*this.rate - index+VISIBLE_SLOTS);
+}
+
+Reel.prototype.releaseVisibleSymbols = function(){
+  this.visibleSymbols.forEach(
+    function(symb){
+      if(!symb.launched){
+        throw Error("Asserion failure, all symbols in visibleSymbols must be launched")
+      }
+      symb.setY(0);
+      symb.launched=false;
+    }
+  )
+  this.visibleSymbols = [];
+}
+
+function NOP(x){
+  return "This function is just a NO-OP to prevent optimizing out the variables. Debugging only"
+}
+
+Reel.prototype.update = function(totalSpinTime){
+  NOP(this); // DEBUG ONLY, prevent optimization
+  // Release the old visible symbols
+  this.releaseVisibleSymbols();
+  // calculate new visible symbols
+  let bottomVisibleSymbolIndex = Math.floor(totalSpinTime*this.rate);
+  this.visibleSymbolIndices = this.visibleSymbolIncrements.map(
+    function(x){
+      return x+bottomVisibleSymbolIndex;
+    }
+  );
+
+  for(let i = 0; i<this.visibleSymbolIndices.length; i++){
+    let symbolIndex = this.visibleSymbolIndices[i];
+    // check if we generated the symbols, if not; do so
+    if(typeof(this.generatedSymbolTypes[symbolIndex])==="undefined"){
+      this.generatedSymbolTypes[symbolIndex] = Math.floor(Math.random()*FILENAMES.length);
+    }
+    // update symbol coordinates
+    let symb = this.symbolTypePool[this.generatedSymbolTypes[symbolIndex]].lease();
+    symb.setY(this.calculateCoordinate(totalSpinTime, symbolIndex));
+    this.visibleSymbols.push(symb);
+  }
+}
+
+
+/** GameDisplay class */
+GameDisplay = function(){
+  let reelRates = [0.003,0.004,0.005,0.002];
+  let reelIds = [0,1,2,3].map(
+    function(x){
+      return "reel-"+x;
+    }
+  )
+
+  this.reels = reelIds.map(
+    function(x,i){
+      return new Reel(x, reelRates[i]);
+    }
+  )
+  reelIds.map(
+    function (id, i){
+      document.getElementById(id).style.left=SIZE*i+'px';
+    }
+  )
   
-  this.initialSymbols = [];
+  this.totalSpinTime = 0;
+  this.totalSpinTimeOld = 0;
+  this.latestSpinStartTime = null;
+  return this;
 }
 
-reel = [1,2,3,4]
-reel = reel.map(function (x){
-  let symb = new SlotSymbol(FILENAMES[x-1]);
-  symb.setY(x*SIZE);
-  symb.attach('reel-1');
-  return symb;
-});
+GameDisplay.prototype.update = function(time){
+  this.totalSpinTime = this.totalSpinTimeOld + time-this.latestSpinStartTime;
+  for(let i = 0; i<this.reels.length; i++){
+    this.reels[i].update(this.totalSpinTime);
+  }
+}
+
+GameDisplay.prototype.spin = function(){
+  this.latestSpinStartTime = performance.now();
+  let gameDisplay = this; //ensure we have access to the instance within the callbacks
+  requestAnimationFrame(
+    function GameDisplayTick(time){
+      if(window.stopped){return};
+      gameDisplay.update(time);
+      requestAnimationFrame(GameDisplayTick);
+    }
+  )
+}
+
+GameDisplay.prototype.stop = function(){
+  //TODO: MAYBE remove the global stop flag and put it inside GameDisplay
+  window.stopped = true;
+  this.totalSpinTimeOld = this.totalSpinTime;
+}
+
+gameDisplay = new GameDisplay();
 
 function spin(){
-  window.stopped = false;
-  reel[0].spin();
-  reel[1].spin();
-  reel[2].spin();
-  reel[3].spin();
-
-  // let elem = slotSymbolImageArray[0][0];
-  // let startTime = performance.now();
-  // requestAnimationFrame(
-  //   function spinOneSymbol(time, duration=2000){
-  //     if (window.stopped) { return };
-  //     let progress = (time-startTime)/duration;
-  //     if(progress < 1){
-  //       let newY = String(Math.floor(progress*(TOTAL_HEIGHT-SIZE)))+"px";
-  //       elem.style.top = newY;
-  //       requestAnimationFrame(spinOneSymbol);
-  //     }else{
-  //       elem.style.top = 0;
-  //     }
-  //   }
-  // );
+  if (window.stopped){ //"debounce"
+    window.stopped = false;
+    gameDisplay.spin();
+  }
 }
 
 function stop(){
-  console.log('Stopping');
-  window.stopped = true;
+  gameDisplay.stop()
 }
+
+
+window.stopped = true;
