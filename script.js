@@ -210,12 +210,12 @@ GameDisplay.prototype.getSymbolsOnTheWinningLine = function () {
 
 GameDisplay.prototype.highlightWinningSymbols = function () {
   this.winningSymbols.forEach(function (symb) {
-    symb.img.style.border = "10px solid red";
+    symb.img.classList.add("winningSymbol");
   });
 }
 GameDisplay.prototype.removeHighlight = function () {
   this.winningSymbols.forEach(function (symb) {
-    symb.img.style.border = "none";
+    symb.img.classList.remove("winningSymbol");
   });
 }
 
