@@ -3,21 +3,7 @@ const VISIBLE_SLOTS = 3;
 //creates array of symbols filenames
 const FILENAMES = [1, 2, 3, 4, 5, 6, 7, 8].map((x) => "assets/" + x + ".png");
 
-//creates array of reels id-s
-let parents = [1, 2, 3, 4].map((x) => "reel-" + x);
-
 let slotsDisplay = document.getElementById("slots-display");
-
-//with argument filename returns element
-function createSlotSymbol(filename, parentId) {
-  let img = document.createElement("img");
-  img.src = filename;
-  img.className = "symbol";
-  let parent = document.getElementById(parentId);
-  parent.appendChild(img);
-  return img;
-}
-
 slotsDisplay.style.height = 'calc(5*' + SIZE + 'px)';
 
 /** SlotSymbol class constructor
