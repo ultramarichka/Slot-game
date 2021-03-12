@@ -183,6 +183,7 @@ GameDisplay = function () {
   this.totalSpinTimeOld = 0;
   this.latestSpinStartTime = null;
   this.winningSymbols = [];
+  this.stopped = true;
   return this;
 }
 
@@ -204,7 +205,7 @@ GameDisplay.prototype.spin = function () {
   let gameDisplay = this; //ensure we have access to the instance within the callbacks
   requestAnimationFrame(
     function GameDisplayTick(time) {
-      if (window.stopped) { return };
+      if (gameDisplay.stopped) { return };
       gameDisplay.update(time);
       requestAnimationFrame(GameDisplayTick);
     }
@@ -213,7 +214,7 @@ GameDisplay.prototype.spin = function () {
 
 GameDisplay.prototype.stop = function () {
   //TODO: MAYBE remove the global stop flag and put it inside GameDisplay
-  window.stopped = true;
+  this.stopped = true;
   this.totalSpinTimeOld = this.totalSpinTime;
   this.win();
 }
@@ -277,8 +278,8 @@ GameDisplay.prototype.win = function () {
 const gameDisplay = new GameDisplay();
 
 function spin() {
-  if (window.stopped) { //"debounce"
-    window.stopped = false;
+  if (gameDisplay.stopped) { //"debounce"
+    gameDisplay.stopped = false;
     gameDisplay.spin();
   }
 }
@@ -288,8 +289,6 @@ function stop() {
 }
 
 function refresh() {
+  if(!gameDisplay.stopped){return};
   gameDisplay.reset();
-  return false;
 }
-
-window.stopped = true;
