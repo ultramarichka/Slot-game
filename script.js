@@ -199,6 +199,7 @@ GameDisplay.prototype.update = function (time) {
 }
 
 GameDisplay.prototype.spin = function () {
+  this.removeHighlight();
   this.latestSpinStartTime = performance.now();
   let gameDisplay = this; //ensure we have access to the instance within the callbacks
   requestAnimationFrame(
@@ -229,6 +230,11 @@ GameDisplay.prototype.getSymbolsOnTheWinningLine = function () {
 GameDisplay.prototype.highlightWinningSymbols = function () {
   this.winningSymbols.forEach(function (symb) {
     symb.img.style.border = "10px solid red";
+  });
+}
+GameDisplay.prototype.removeHighlight = function () {
+  this.winningSymbols.forEach(function (symb) {
+    symb.img.style.border = "none";
   });
 }
 
