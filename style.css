@@ -116,6 +116,7 @@ button {
   transform: scale(1.2);
   animation-name: win;
   animation-duration: 1s;
+  filter: drop-shadow(0 0 4px gold)
 }
 
 @keyframes win {
