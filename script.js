@@ -186,6 +186,11 @@ GameDisplay = function () {
   return this;
 }
 
+GameDisplay.prototype.reset = function(){
+  this.totalSpinTimeOld = 0;
+  this.update(this.latestSpinStartTime); // see how GameDisplay update works to understand
+}
+
 GameDisplay.prototype.update = function (time) {
   this.totalSpinTime = this.totalSpinTimeOld + time - this.latestSpinStartTime;
   for (let i = 0; i < this.reels.length; i++) {
@@ -263,7 +268,7 @@ GameDisplay.prototype.win = function () {
 
 }
 
-gameDisplay = new GameDisplay();
+const gameDisplay = new GameDisplay();
 
 function spin() {
   if (window.stopped) { //"debounce"
@@ -277,7 +282,7 @@ function stop() {
 }
 
 function refresh() {
-  location.reload();
+  gameDisplay.reset();
   return false;
 }
 
