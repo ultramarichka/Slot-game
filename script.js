@@ -2,8 +2,7 @@ const SIZE = 230;
 const VISIBLE_SLOTS = 3;
 //creates array of symbols filenames
 const FILENAMES = [1, 2, 3, 4, 5, 6, 7, 8].map((x) => "assets/" + x + ".png");
-
-
+document.documentElement.style.setProperty('--size',SIZE+'px')
 /** SlotSymbol class constructor
  * 
  * @param {*} url 
@@ -141,7 +140,7 @@ Reel.prototype.getMiddleSymbol = function () {
 
 
 /** GameDisplay class */
-GameDisplay = function (id) {
+GameDisplay = function () {
   let reelRates = [0.003, 0.004, 0.005, 0.002];
   let reelIds = [0, 1, 2, 3].map(
     function (x) {
@@ -165,8 +164,6 @@ GameDisplay = function (id) {
   this.latestSpinStartTime = null;
   this.winningSymbols = [];
   this.stopped = true;
-  let slotsDisplay = document.getElementById(id);
-  slotsDisplay.style.height = 'calc(5*' + SIZE + 'px)';
   return this;
 }
 
@@ -258,7 +255,7 @@ GameDisplay.prototype.win = function () {
 
 }
 
-const gameDisplay = new GameDisplay("slots-display");
+const gameDisplay = new GameDisplay();
 
 function spin() {
   if (gameDisplay.stopped) { //"debounce"

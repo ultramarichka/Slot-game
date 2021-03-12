@@ -1,11 +1,12 @@
 :root {
- --size: 230;
+ --size: 230px; /* no effect, overriden from JS */
  --button-size: 80px;
 }
 #slots-display {
  margin: 20%;
  position: relative;
- width: 920px;
+ width: calc(var(--size)*4);
+ height: calc(5 * var(--size));
 }
 .reel {
   position: relative;
@@ -21,21 +22,21 @@ span {
 }
 .cover {
   position: absolute;
-  height: 230px;
+  height: var(--size);
   background-color: white;
-  width: 920px;
+  width: calc(var(--size)*4);
   z-index: 1000;
 }
 #cover-bottom {          
   position: absolute; 
-  top: 920px;            
+  top: calc(var(--size)*4);            
   bottom: 0;
 }
 #middle-line {
   position: relative;
-  top: 555px;
+  top: calc(var(--size)*2.5 - 5px);
   left: -5px;
-  width: 920px;
+  width: calc(var(--size)*4);
   border: 5px solid black;
 }
 
