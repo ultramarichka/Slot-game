@@ -33,11 +33,10 @@ span {
 }
 #middle-line {
   position: relative;
-  top: 420px;
-  left: -20px;
-  height: 230px;
+  top: 555px;
+  left: -5px;
   width: 920px;
-  border: 20px solid #bae6a7;
+  border: 5px solid black;
 }
 
 /*button style*/

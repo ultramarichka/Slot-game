@@ -2,7 +2,7 @@ const SIZE = 230;
 const VISIBLE_SLOTS = 3;
 const HIDDEN_Y = SIZE * (VISIBLE_SLOTS + 1);
 //creates array of symbols filenames
-const FILENAMES = [1, 2, 3, 4, 5, 6, 7, 8].map((x) => "assets/" + 1 + ".png");
+const FILENAMES = [1, 2, 3, 4, 5, 6, 7, 8].map((x) => "assets/" + x + ".png");
 
 //array of src-s of symbols(images)
 let slotSymbolUrlArray = FILENAMES.slice();
