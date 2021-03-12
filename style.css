@@ -14,6 +14,7 @@
 #middle-line {
   position: absolute;
 }
+
 img {
   position: absolute;
 }
@@ -25,7 +26,7 @@ span {
   height: var(--size);
   background-color: white;
   width: calc(var(--size)*4);
-  z-index: 1000;
+  z-index: 10;
 }
 #cover-bottom {          
   position: absolute; 
@@ -35,11 +36,21 @@ span {
 #middle-line {
   position: relative;
   top: calc(var(--size)*2.5 - 5px);
-  left: -5px;
   width: calc(var(--size)*4);
   border: 5px solid black;
 }
-
+#frame {
+  position: absolute;
+  top: var(--size);
+  height: calc(var(--size)*3);
+  width: calc(var(--size)*4);
+  border: 10px solid gold;
+  z-index: 100;
+  box-shadow: 0 0 100px 25px goldenrod;
+}
+button {
+  z-index: 10000;
+}
 /*button style*/
 #controlPanel {
   position: absolute;
@@ -48,7 +59,7 @@ span {
 .jellyButton {
 	cursor: pointer;
 	position: relative;
-  margin: 1.25em 0.25em;
+  margin: 2.5em 0.25em;
 	padding: 0.5em 2em;
 	border-radius: 3.5em;
 	line-height: 1.5em;
@@ -61,6 +72,7 @@ span {
 							0 -0.25rem 1.5rem rgb(1, 97, 9) inset,
 							0 0.75rem 0.5rem rgba(255,255,255, 0.4) inset,
 							0 0.25rem 0.5rem 0 #4b8f29 inset;
+
 }
 
 .jellyButton span {
