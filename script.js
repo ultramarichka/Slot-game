@@ -1,11 +1,8 @@
 const SIZE = 230;
 const VISIBLE_SLOTS = 3;
-const HIDDEN_Y = SIZE * (VISIBLE_SLOTS + 1);
 //creates array of symbols filenames
 const FILENAMES = [1, 2, 3, 4, 5, 6, 7, 8].map((x) => "assets/" + x + ".png");
 
-//array of src-s of symbols(images)
-let slotSymbolUrlArray = FILENAMES.slice();
 //creates array of reels id-s
 let parents = [1, 2, 3, 4].map((x) => "reel-" + x);
 
@@ -91,7 +88,7 @@ function Reel(id, rate, symbolSize) {
     this.visibleSymbolIncrements.push(i);
   }
   // create a preloaded symbolPool for each symbolType
-  this.symbolTypePool = slotSymbolUrlArray.map(
+  this.symbolTypePool = FILENAMES.map(
     function (src) {
       return new SymbolPool(src, id, VISIBLE_SLOTS + 2);
     }
