@@ -138,10 +138,20 @@ Reel.prototype.getMiddleSymbol = function () {
   )
 }
 
+Reel.prototype.setReelInTheMiddle = function() {  
+  if( (this.visibleSymbols[0].getY()) > 0 ){
+      this.visibleSymbols.forEach(function(symb, i){
+        symb.setY( SIZE * (i+1));
+      }) 
+    //}
+    
+  }
+}
+
 
 /** GameDisplay class */
 GameDisplay = function () {
-  let reelRates = [0.003, 0.004, 0.005, 0.002];
+  let reelRates = [0.002, 0.002, 0.002, 0.002];
   let reelIds = [0, 1, 2, 3].map(
     function (x) {
       return "reel-" + x;
@@ -196,6 +206,7 @@ GameDisplay.prototype.stop = function () {
   //TODO: MAYBE remove the global stop flag and put it inside GameDisplay
   this.stopped = true;
   this.totalSpinTimeOld = this.totalSpinTime;
+  this.setSymbolsOnTheWinningLine();
   this.win();
 }
 
@@ -208,7 +219,17 @@ GameDisplay.prototype.getSymbolsOnTheWinningLine = function () {
   )
 }
 
+GameDisplay.prototype.setSymbolsOnTheWinningLine = function () {
+  // from each reel get a symbol on the winning line and return
+  return this.reels.map(
+    function (reel) {
+      return reel.setReelInTheMiddle();
+    }
+  )
+}
+
 GameDisplay.prototype.highlightWinningSymbols = function () {
+  alert("YOU WIN!");
   this.winningSymbols.forEach(function (symb) {
     symb.img.classList.add("winningSymbol");
   });
